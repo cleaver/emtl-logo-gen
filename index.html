@@ -1,545 +1,546 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elixir Montréal - YouTube Thumbnail Generator</title>
     <style>
         :root {
-  /* Primitive Color Tokens */
-  --color-white: rgba(255, 255, 255, 1);
-  --color-black: rgba(0, 0, 0, 1);
-  --color-cream-50: rgba(252, 252, 249, 1);
-  --color-cream-100: rgba(255, 255, 253, 1);
-  --color-gray-200: rgba(245, 245, 245, 1);
-  --color-gray-300: rgba(167, 169, 169, 1);
-  --color-gray-400: rgba(119, 124, 124, 1);
-  --color-slate-500: rgba(98, 108, 113, 1);
-  --color-brown-600: rgba(94, 82, 64, 1);
-  --color-charcoal-700: rgba(31, 33, 33, 1);
-  --color-charcoal-800: rgba(38, 40, 40, 1);
-  --color-slate-900: rgba(19, 52, 59, 1);
-  --color-teal-300: rgba(50, 184, 198, 1);
-  --color-teal-400: rgba(45, 166, 178, 1);
-  --color-teal-500: rgba(33, 128, 141, 1);
-  --color-teal-600: rgba(29, 116, 128, 1);
-  --color-teal-700: rgba(26, 104, 115, 1);
-  --color-teal-800: rgba(41, 150, 161, 1);
-  --color-red-400: rgba(255, 84, 89, 1);
-  --color-red-500: rgba(192, 21, 47, 1);
-  --color-orange-400: rgba(230, 129, 97, 1);
-  --color-orange-500: rgba(168, 75, 47, 1);
-
-  /* RGB versions for opacity control */
-  --color-brown-600-rgb: 94, 82, 64;
-  --color-teal-500-rgb: 33, 128, 141;
-  --color-slate-900-rgb: 19, 52, 59;
-  --color-slate-500-rgb: 98, 108, 113;
-  --color-red-500-rgb: 192, 21, 47;
-  --color-red-400-rgb: 255, 84, 89;
-  --color-orange-500-rgb: 168, 75, 47;
-  --color-orange-400-rgb: 230, 129, 97;
-
-  /* Background color tokens (Light Mode) */
-  --color-bg-1: rgba(59, 130, 246, 0.08);
-  --color-bg-2: rgba(245, 158, 11, 0.08);
-  --color-bg-3: rgba(34, 197, 94, 0.08);
-  --color-bg-4: rgba(239, 68, 68, 0.08);
-  --color-bg-5: rgba(147, 51, 234, 0.08);
-  --color-bg-6: rgba(249, 115, 22, 0.08);
-  --color-bg-7: rgba(236, 72, 153, 0.08);
-  --color-bg-8: rgba(6, 182, 212, 0.08);
-
-  /* Semantic Color Tokens (Light Mode) */
-  --color-background: var(--color-cream-50);
-  --color-surface: var(--color-cream-100);
-  --color-text: var(--color-slate-900);
-  --color-text-secondary: var(--color-slate-500);
-  --color-primary: var(--color-teal-500);
-  --color-primary-hover: var(--color-teal-600);
-  --color-primary-active: var(--color-teal-700);
-  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
-  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
-  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
-  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
-  --color-btn-primary-text: var(--color-cream-50);
-  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
-  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
-  --color-error: var(--color-red-500);
-  --color-success: var(--color-teal-500);
-  --color-warning: var(--color-orange-500);
-  --color-info: var(--color-slate-500);
-  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
-  --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
-
-  /* Common style patterns */
-  --focus-ring: 0 0 0 3px var(--color-focus-ring);
-  --focus-outline: 2px solid var(--color-primary);
-  --status-bg-opacity: 0.15;
-  --status-border-opacity: 0.25;
-  --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-
-  /* RGB versions for opacity control */
-  --color-success-rgb: 33, 128, 141;
-  --color-error-rgb: 192, 21, 47;
-  --color-warning-rgb: 168, 75, 47;
-  --color-info-rgb: 98, 108, 113;
-
-  /* Typography */
-  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
-    Monaco, Consolas, monospace;
-  --font-size-xs: 11px;
-  --font-size-sm: 12px;
-  --font-size-base: 14px;
-  --font-size-md: 14px;
-  --font-size-lg: 16px;
-  --font-size-xl: 18px;
-  --font-size-2xl: 20px;
-  --font-size-3xl: 24px;
-  --font-size-4xl: 30px;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 550;
-  --font-weight-bold: 600;
-  --line-height-tight: 1.2;
-  --line-height-normal: 1.5;
-  --letter-spacing-tight: -0.01em;
-
-  /* Spacing */
-  --space-0: 0;
-  --space-1: 1px;
-  --space-2: 2px;
-  --space-4: 4px;
-  --space-6: 6px;
-  --space-8: 8px;
-  --space-10: 10px;
-  --space-12: 12px;
-  --space-16: 16px;
-  --space-20: 20px;
-  --space-24: 24px;
-  --space-32: 32px;
-
-  /* Border Radius */
-  --radius-sm: 6px;
-  --radius-base: 8px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --radius-full: 9999px;
-
-  /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
-    0 2px 4px -1px rgba(0, 0, 0, 0.02);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04),
-    0 4px 6px -2px rgba(0, 0, 0, 0.02);
-  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
-
-  /* Animation */
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
-
-  /* Layout */
-  --container-sm: 640px;
-  --container-md: 768px;
-  --container-lg: 1024px;
-  --container-xl: 1280px;
-
-  /* Elixir Brand Colors */
-  --elixir-purple: #7C6D91;
-  --elixir-magenta: #D278AA;
-  --elixir-salmon: #F3A09C;
-  --elixir-peach: #F3CC9C;
-  --elixir-light: #FAEBC3;
-}
-
-/* Dark mode colors */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-gray-400-rgb: 119, 124, 124;
-    --color-teal-300-rgb: 50, 184, 198;
-    --color-gray-300-rgb: 167, 169, 169;
-    --color-gray-200-rgb: 245, 245, 245;
-
-    --color-bg-1: rgba(29, 78, 216, 0.15);
-    --color-bg-2: rgba(180, 83, 9, 0.15);
-    --color-bg-3: rgba(21, 128, 61, 0.15);
-    --color-bg-4: rgba(185, 28, 28, 0.15);
-    --color-bg-5: rgba(107, 33, 168, 0.15);
-    --color-bg-6: rgba(194, 65, 12, 0.15);
-    --color-bg-7: rgba(190, 24, 93, 0.15);
-    --color-bg-8: rgba(8, 145, 178, 0.15);
-
-    --color-background: var(--color-charcoal-700);
-    --color-surface: var(--color-charcoal-800);
-    --color-text: var(--color-gray-200);
-    --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
-    --color-primary: var(--color-teal-300);
-    --color-primary-hover: var(--color-teal-400);
-    --color-primary-active: var(--color-teal-800);
-    --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
-    --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
-    --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
-    --color-border: rgba(var(--color-gray-400-rgb), 0.3);
-    --color-error: var(--color-red-400);
-    --color-success: var(--color-teal-300);
-    --color-warning: var(--color-orange-400);
-    --color-info: var(--color-gray-300);
-    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
-    --color-btn-primary-text: var(--color-slate-900);
-    --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
-    --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
-    --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.15);
-    --button-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
-    --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
-    --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
-
-    --focus-ring: 0 0 0 3px var(--color-focus-ring);
-    --focus-outline: 2px solid var(--color-primary);
-    --status-bg-opacity: 0.15;
-    --status-border-opacity: 0.25;
-    --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-
-    --color-success-rgb: var(--color-teal-300-rgb);
-    --color-error-rgb: var(--color-red-400-rgb);
-    --color-warning-rgb: var(--color-orange-400-rgb);
-    --color-info-rgb: var(--color-gray-300-rgb);
-  }
-}
-
-@font-face {
-  font-family: 'FKGroteskNeue';
-  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
-    format('woff2');
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: var(--font-family-base);
-    background-color: var(--color-background);
-    color: var(--color-text);
-    line-height: var(--line-height-normal);
-}
-
-.app-container {
-    display: flex;
-    min-height: 100vh;
-}
-
-.preview-section {
-    flex: 1;
-    padding: var(--space-32);
-    background-color: var(--color-bg-5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.preview-header {
-    margin-bottom: var(--space-24);
-    text-align: center;
-}
-
-.preview-header h1 {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--elixir-purple);
-    margin-bottom: var(--space-8);
-}
-
-.preview-header p {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-base);
-}
-
-.canvas-container {
-    background: var(--color-white);
-    border-radius: var(--radius-lg);
-    padding: var(--space-16);
-    box-shadow: var(--shadow-lg);
-    margin-bottom: var(--space-24);
-}
-
-#thumbnail-canvas {
-    display: block;
-    max-width: 100%;
-    height: auto;
-    border-radius: var(--radius-base);
-}
-
-.download-btn {
-    background: var(--elixir-purple);
-    color: var(--color-white);
-    border: none;
-    padding: var(--space-12) var(--space-32);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    border-radius: var(--radius-base);
-    cursor: pointer;
-    transition: all var(--duration-normal) var(--ease-standard);
-    box-shadow: var(--shadow-sm);
-}
-
-.download-btn:hover {
-    background: #6A5B7D;
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-.download-btn:active {
-    transform: translateY(0);
-}
-
-.controls-section {
-    width: 400px;
-    background-color: var(--color-surface);
-    padding: var(--space-32);
-    overflow-y: auto;
-    border-left: 1px solid var(--color-border);
-}
-
-.controls-header {
-    margin-bottom: var(--space-24);
-}
-
-.controls-header h2 {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-semibold);
-    margin-bottom: var(--space-8);
-}
-
-.control-group {
-    margin-bottom: var(--space-24);
-}
-
-.control-label {
-    display: block;
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-text);
-    margin-bottom: var(--space-8);
-}
-
-.form-control {
-    width: 100%;
-    padding: var(--space-8) var(--space-12);
-    font-size: var(--font-size-base);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-base);
-    background-color: var(--color-background);
-    color: var(--color-text);
-    transition: border-color var(--duration-fast) var(--ease-standard);
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--elixir-purple);
-    box-shadow: var(--focus-ring);
-}
-
-textarea.form-control {
-    resize: vertical;
-    min-height: 80px;
-    font-family: var(--font-family-base);
-}
-
-select.form-control {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: var(--select-caret-light);
-    background-repeat: no-repeat;
-    background-position: right var(--space-12) center;
-    background-size: 16px;
-    padding-right: var(--space-32);
-}
-
-@media (prefers-color-scheme: dark) {
-    select.form-control {
-        background-image: var(--select-caret-dark);
-    }
-}
-
-.slider-container {
-    display: flex;
-    align-items: center;
-    gap: var(--space-12);
-}
-
-.slider-container input[type="range"] {
-    flex: 1;
-}
-
-.slider-value {
-    min-width: 50px;
-    text-align: center;
-    font-weight: var(--font-weight-medium);
-    color: var(--elixir-purple);
-    font-size: var(--font-size-base);
-}
-
-input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 6px;
-    border-radius: var(--radius-full);
-    background: var(--color-secondary);
-    outline: none;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--elixir-purple);
-    cursor: pointer;
-    transition: all var(--duration-fast) var(--ease-standard);
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-    background: var(--elixir-magenta);
-    transform: scale(1.1);
-}
-
-input[type="range"]::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--elixir-purple);
-    cursor: pointer;
-    border: none;
-}
-
-.template-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-12);
-}
-
-.template-option {
-    position: relative;
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-base);
-    padding: var(--space-12);
-    cursor: pointer;
-    transition: all var(--duration-fast) var(--ease-standard);
-    background-color: var(--color-background);
-}
-
-.template-option:hover {
-    border-color: var(--elixir-purple);
-    box-shadow: var(--shadow-sm);
-}
-
-.template-option.active {
-    border-color: var(--elixir-purple);
-    background-color: var(--color-bg-5);
-    box-shadow: var(--shadow-md);
-}
-
-.template-preview {
-    width: 100%;
-    height: 80px;
-    border-radius: var(--radius-sm);
-    margin-bottom: var(--space-8);
-    overflow: hidden;
-}
-
-.template-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.template-name {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
-    margin-bottom: var(--space-4);
-    color: var(--color-text);
-}
-
-.template-desc {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-secondary);
-}
-
-.file-input-wrapper {
-    position: relative;
-}
-
-.file-input-label {
-    display: inline-block;
-    padding: var(--space-8) var(--space-16);
-    background-color: var(--color-secondary);
-    color: var(--color-text);
-    border-radius: var(--radius-base);
-    cursor: pointer;
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    transition: background-color var(--duration-fast) var(--ease-standard);
-    border: 1px solid var(--color-border);
-}
-
-.file-input-label:hover {
-    background-color: var(--color-secondary-hover);
-}
-
-input[type="file"] {
-    display: none;
-}
-
-.file-name {
-    margin-top: var(--space-8);
-    font-size: var(--font-size-xs);
-    color: var(--color-text-secondary);
-    font-style: italic;
-}
-
-.clear-image-btn {
-    margin-top: var(--space-8);
-    padding: var(--space-4) var(--space-12);
-    background-color: var(--color-error);
-    color: var(--color-white);
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: var(--font-size-xs);
-    cursor: pointer;
-    transition: opacity var(--duration-fast) var(--ease-standard);
-}
-
-.clear-image-btn:hover {
-    opacity: 0.85;
-}
-
-@media (max-width: 1024px) {
-    .app-container {
-        flex-direction: column;
-    }
-
-    .controls-section {
-        width: 100%;
-        border-left: none;
-        border-top: 1px solid var(--color-border);
-    }
-}
+            /* Primitive Color Tokens */
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+
+            /* RGB versions for opacity control */
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-red-400-rgb: 255, 84, 89;
+            --color-orange-500-rgb: 168, 75, 47;
+            --color-orange-400-rgb: 230, 129, 97;
+
+            /* Background color tokens (Light Mode) */
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+            --color-bg-4: rgba(239, 68, 68, 0.08);
+            --color-bg-5: rgba(147, 51, 234, 0.08);
+            --color-bg-6: rgba(249, 115, 22, 0.08);
+            --color-bg-7: rgba(236, 72, 153, 0.08);
+            --color-bg-8: rgba(6, 182, 212, 0.08);
+
+            /* Semantic Color Tokens (Light Mode) */
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-teal-500);
+            --color-warning: var(--color-orange-500);
+            --color-info: var(--color-slate-500);
+            --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+            --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+            /* Common style patterns */
+            --focus-ring: 0 0 0 3px var(--color-focus-ring);
+            --focus-outline: 2px solid var(--color-primary);
+            --status-bg-opacity: 0.15;
+            --status-border-opacity: 0.25;
+            --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+            /* RGB versions for opacity control */
+            --color-success-rgb: 33, 128, 141;
+            --color-error-rgb: 192, 21, 47;
+            --color-warning-rgb: 168, 75, 47;
+            --color-info-rgb: 98, 108, 113;
+
+            /* Typography */
+            --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
+                BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
+                Monaco, Consolas, monospace;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 30px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --letter-spacing-tight: -0.01em;
+
+            /* Spacing */
+            --space-0: 0;
+            --space-1: 1px;
+            --space-2: 2px;
+            --space-4: 4px;
+            --space-6: 6px;
+            --space-8: 8px;
+            --space-10: 10px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+
+            /* Shadows */
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
+                0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04),
+                0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+
+            /* Animation */
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+
+            /* Layout */
+            --container-sm: 640px;
+            --container-md: 768px;
+            --container-lg: 1024px;
+            --container-xl: 1280px;
+
+            /* Elixir Brand Colors */
+            --elixir-purple: #7C6D91;
+            --elixir-magenta: #D278AA;
+            --elixir-salmon: #F3A09C;
+            --elixir-peach: #F3CC9C;
+            --elixir-light: #FAEBC3;
+        }
+
+        /* Dark mode colors */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-gray-400-rgb: 119, 124, 124;
+                --color-teal-300-rgb: 50, 184, 198;
+                --color-gray-300-rgb: 167, 169, 169;
+                --color-gray-200-rgb: 245, 245, 245;
+
+                --color-bg-1: rgba(29, 78, 216, 0.15);
+                --color-bg-2: rgba(180, 83, 9, 0.15);
+                --color-bg-3: rgba(21, 128, 61, 0.15);
+                --color-bg-4: rgba(185, 28, 28, 0.15);
+                --color-bg-5: rgba(107, 33, 168, 0.15);
+                --color-bg-6: rgba(194, 65, 12, 0.15);
+                --color-bg-7: rgba(190, 24, 93, 0.15);
+                --color-bg-8: rgba(8, 145, 178, 0.15);
+
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-primary-active: var(--color-teal-800);
+                --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+                --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+                --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-error: var(--color-red-400);
+                --color-success: var(--color-teal-300);
+                --color-warning: var(--color-orange-400);
+                --color-info: var(--color-gray-300);
+                --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+                --color-btn-primary-text: var(--color-slate-900);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+                --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+                --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+                --button-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+                --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+                --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+
+                --focus-ring: 0 0 0 3px var(--color-focus-ring);
+                --focus-outline: 2px solid var(--color-primary);
+                --status-bg-opacity: 0.15;
+                --status-border-opacity: 0.25;
+                --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+                --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+                --color-success-rgb: var(--color-teal-300-rgb);
+                --color-error-rgb: var(--color-red-400-rgb);
+                --color-warning-rgb: var(--color-orange-400-rgb);
+                --color-info-rgb: var(--color-gray-300-rgb);
+            }
+        }
+
+        @font-face {
+            font-family: 'FKGroteskNeue';
+            src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: var(--line-height-normal);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .preview-section {
+            flex: 1;
+            padding: var(--space-32);
+            background-color: var(--color-bg-5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-header {
+            margin-bottom: var(--space-24);
+            text-align: center;
+        }
+
+        .preview-header h1 {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--elixir-purple);
+            margin-bottom: var(--space-8);
+        }
+
+        .preview-header p {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-base);
+        }
+
+        .canvas-container {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-16);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: var(--space-24);
+        }
+
+        #thumbnail-canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-base);
+        }
+
+        .download-btn {
+            background: var(--elixir-purple);
+            color: var(--color-white);
+            border: none;
+            padding: var(--space-12) var(--space-32);
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .download-btn:hover {
+            background: #6A5B7D;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .controls-section {
+            width: 400px;
+            background-color: var(--color-surface);
+            padding: var(--space-32);
+            overflow-y: auto;
+            border-left: 1px solid var(--color-border);
+        }
+
+        .controls-header {
+            margin-bottom: var(--space-24);
+        }
+
+        .controls-header h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-8);
+        }
+
+        .control-group {
+            margin-bottom: var(--space-24);
+        }
+
+        .control-label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--space-8) var(--space-12);
+            font-size: var(--font-size-base);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            transition: border-color var(--duration-fast) var(--ease-standard);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--elixir-purple);
+            box-shadow: var(--focus-ring);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+            font-family: var(--font-family-base);
+        }
+
+        select.form-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: var(--select-caret-light);
+            background-repeat: no-repeat;
+            background-position: right var(--space-12) center;
+            background-size: 16px;
+            padding-right: var(--space-32);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            select.form-control {
+                background-image: var(--select-caret-dark);
+            }
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+        }
+
+        .slider-value {
+            min-width: 50px;
+            text-align: center;
+            font-weight: var(--font-weight-medium);
+            color: var(--elixir-purple);
+            font-size: var(--font-size-base);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: var(--radius-full);
+            background: var(--color-secondary);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--elixir-purple);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: var(--elixir-magenta);
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--elixir-purple);
+            cursor: pointer;
+            border: none;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-12);
+        }
+
+        .template-option {
+            position: relative;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-base);
+            padding: var(--space-12);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-standard);
+            background-color: var(--color-background);
+        }
+
+        .template-option:hover {
+            border-color: var(--elixir-purple);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .template-option.active {
+            border-color: var(--elixir-purple);
+            background-color: var(--color-bg-5);
+            box-shadow: var(--shadow-md);
+        }
+
+        .template-preview {
+            width: 100%;
+            height: 80px;
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-8);
+            overflow: hidden;
+        }
+
+        .template-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .template-name {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-4);
+            color: var(--color-text);
+        }
+
+        .template-desc {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: var(--space-8) var(--space-16);
+            background-color: var(--color-secondary);
+            color: var(--color-text);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            transition: background-color var(--duration-fast) var(--ease-standard);
+            border: 1px solid var(--color-border);
+        }
+
+        .file-input-label:hover {
+            background-color: var(--color-secondary-hover);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: var(--space-8);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        .clear-image-btn {
+            margin-top: var(--space-8);
+            padding: var(--space-4) var(--space-12);
+            background-color: var(--color-error);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            cursor: pointer;
+            transition: opacity var(--duration-fast) var(--ease-standard);
+        }
+
+        .clear-image-btn:hover {
+            opacity: 0.85;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .controls-section {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--color-border);
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <div class="preview-section">
@@ -563,28 +564,32 @@ input[type="file"] {
                 <div class="template-grid" id="template-grid">
                     <div class="template-option active" data-template="gradient">
                         <div class="template-preview">
-                            <img src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/b1327f7e-8408-4ae4-9ce1-760c8b04cc77.png" alt="Modern Gradient">
+                            <img src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/b1327f7e-8408-4ae4-9ce1-760c8b04cc77.png"
+                                alt="Modern Gradient">
                         </div>
                         <div class="template-name">Modern Gradient</div>
                         <div class="template-desc">Bold gradient with Elixir colors</div>
                     </div>
                     <div class="template-option" data-template="minimalist">
                         <div class="template-preview">
-                            <img src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/3f12a529-d216-4a57-876f-a8ad46cc48a2.png" alt="Clean Minimalist">
+                            <img src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/3f12a529-d216-4a57-876f-a8ad46cc48a2.png"
+                                alt="Clean Minimalist">
                         </div>
                         <div class="template-name">Clean Minimalist</div>
                         <div class="template-desc">Clean white background</div>
                     </div>
                     <div class="template-option" data-template="dark">
                         <div class="template-preview">
-                            <img src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/fe49e653-ced4-4c60-8713-fa09bcbf2fca.png" alt="Dark Modern">
+                            <img src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/fe49e653-ced4-4c60-8713-fa09bcbf2fca.png"
+                                alt="Dark Modern">
                         </div>
                         <div class="template-name">Dark Modern</div>
                         <div class="template-desc">Dark with neon accents</div>
                     </div>
                     <div class="template-option" data-template="split">
                         <div class="template-preview">
-                            <img src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/8bcacb7f-3140-4931-a55c-cd1a0014fb4a.png" alt="Split-Tone">
+                            <img src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/8bcacb7f-3140-4931-a55c-cd1a0014fb4a.png"
+                                alt="Split-Tone">
                         </div>
                         <div class="template-name">Split-Tone</div>
                         <div class="template-desc">Two-tone professional</div>
@@ -594,7 +599,8 @@ input[type="file"] {
 
             <div class="control-group">
                 <label class="control-label" for="title-input">Talk Title</label>
-                <textarea class="form-control" id="title-input" placeholder="Enter your talk title...">Building Scalable Real-Time Systems with Phoenix LiveView</textarea>
+                <textarea class="form-control" id="title-input"
+                    placeholder="Enter your talk title...">Building Scalable Real-Time Systems with Phoenix LiveView</textarea>
             </div>
 
             <div class="control-group">
@@ -671,10 +677,7 @@ input[type="file"] {
             elixirLogo: null
         };
 
-        // Elixir logo embedded as base64 data URL
-        const ELIXIR_LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA4QAAAJYCAYAAAAgC+9EAAAACXBIWXMAAAsTAAALEwEAmpwYAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIisr74Xuja9a89+bN/rXXPues852zzwfACAyWSDNRNYAMqUIeEeCDx8TG4eQuQIEKJHAAEAizZCFz/SMBAPh+PDwrIsAHvgABeNMLCADATZvAMByH/w/qQplcAYCEAcB0kThLCIAUAEB6jkKmAEBGAYCdmCZTAKAEAGDLY2LjAFAtAGAnf+bTAICd+Jl7AQBblCEVAaCRACATZYhEAGg7AKzPVopFAFgwABRmS8Q5ANgtADBJV2ZIALC3AMDOEAuyAAgMADBRiIUpAAR7AGDIIyN4AISZABRG8lc88SuuEOcqAAB4mbI8uSQ5RYFbCC1xB1dXLh4ozkkXKxQ2YQJhmkAuwnmZGTKBNA/g88wAAKCRFRHgg/P9eM4Ors7ONo62Dl8t6r8G/yJiYuP+5c+rcEAAAOF0ftH+LC+zGoA7BoBt/qIl7gRoXgugdfeLZrIPQLUAoOnaV/Nw+H48PEWhkLnZ2eXk5NhKxEJbYcpXff5nwl/AV/1s+X48/Pf14L7iJIEyXYFHBPjgwsz0TKUcz5IJhGLc5o9H/LcL//wd0yLESWK5WCoU41EScY5EmozzMqUiiUKSKcUl0v9k4t8s+wM+3zUAsGo+AXuRLahdYwP2SycQWHTA4vcAAPK7b8HUKAgDgGiD4c93/+8//UegJQCAZkmScQAAXkQkLlTKsz/HCAAARKCBKrBBG/TBGCzABhzBBdzBC/xgNoRCJMTCQhBCCmSAHHJgKayCQiiGzbAdKmAv1EAdNMBRaIaTcA4uwlW4Dj1wD/phCJ7BKLyBCQRByAgTYSHaiAFiilgjjggXmYX4IcFIBBKLJCDJiBRRIkuRNUgxUopUIFVIHfI9cgI5h1xGupE7yAAygvyGvEcxlIGyUT3UDLVDuag3GoRGogvQZHQxmo8WoJvQcrQaPYw2oefQq2gP2o8+Q8cwwOgYBzPEbDAuxsNCsTgsCZNjy7EirAyrxhqwVqwDu4n1Y8+xdwQSgUXACTYEd0IgYR5BSFhMWE7YSKggHCQ0EdoJNwkDhFHCJyKTqEu0JroR+cQYYjIxh1hILCPWEo8TLxB7iEPENyQSiUMyJ7mQAkmxpFTSEtJG0m5SI+ksqZs0SBojk8naZGuyBzmULCAryIXkneTD5DPkG+Qh8lsKnWJAcaT4U+IoUspqShnlEOU05QZlmDJBVaOaUt2ooVQRNY9aQq2htlKvUYeoEzR1mjnNgxZJS6WtopXTGmgXaPdpr+h0uhHdlR5Ol9BX0svpR+iX6AP0dwwNhhWDx4hnKBmbGAcYZxl3GK+YTKYZ04sZx1QwNzHrmOeZD5lvVVgqtip8FZHKCpVKlSaVGyovVKmqpqreqgtV81XLVI+pXlN9rkZVM1PjqQnUlqtVqp1Q61MbU2epO6iHqmeob1Q/pH5Z/YkGWcNMw09DpFGgsV/jvMYgC2MZs3gsIWsNq4Z1gTXEJrHN2Xx2KruY/R27iz2qqaE5QzNKM1ezUvOUZj8H45hx+Jx0TgnnKKeX836K3hTvKeIpG6Y0TLkxZVxrqpaXllirSKtRq0frvTau7aedpr1Fu1n7gQ5Bx0onXCdHZ4/OBZ3nU9lT3acKpxZNPTr1ri6qa6UbobtEd79up+6Ynr5egJ5Mb6feeb3n+hx9L/1U/W36p/VHDFgGswwkBtsMzhg8xTVxbzwdL8fb8VFDXcNAQ6VhlWGX4YSRudE8o9VGjUYPjGnGXOMk423GbcajJgYmISZLTepN7ppSTbmmKaY7TDtMx83MzaLN1pk1mz0x1zLnm+eb15vft2BaeFostqi2uGVJsuRaplnutrxuhVo5WaVYVVpds0atna0l1rutu6cRp7lOk06rntZnw7Dxtsm2qbcZsOXYBtuutm22fWFnYhdnt8Wuw+6TvZN9un2N/T0HDYfZDqsdWh1+c7RyFDpWOt6azpzuP33F9JbpL2dYzxDP2DPjthPLKcRpnVOb00dnF2e5c4PziIuJS4LLLpc+Lpsbxt3IveRKdPVxXeF60vWdm7Obwu2o26/uNu5p7ofcn8w0nymeWTNz0MPIQ+BR5dE/C5+VMGvfrH5PQ0+BZ7XnIy9jL5FXrdewt6V3qvdh7xc+9j5yn+M+4zw33jLeWV/MN8C3yLfLT8Nvnl+F30N/I/9k/3r/0QCngCUBZwOJgUGBWwL7+Hp8Ib+OPzrbZfay2e1BjKC5QRVBj4KtguXBrSFoyOyQrSH355jOkc5pDoVQfujW0Adh5mGLw34MJ4WHhVeGP45wiFga0TGXNXfR3ENz30T6RJZE3ptnMU85ry1KNSo+qi5qPNo3ujS6P8YuZlnM1VidWElsSxw5LiquNm5svt/87fOH4p3iC+N7F5gvyF1weaHOwvSFpxapLhIsOpZATIhOOJTwQRAqqBaMJfITdyWOCnnCHcJnIi/RNtGI2ENcKh5O8kgqTXqS7JG8NXkkxTOlLOW5hCepkLxMDUzdmzqeFpp2IG0yPTq9MYOSkZBxQqohTZO2Z+pn5mZ2y6xlhbL+xW6Lty8elQfJa7OQrAVZLQq2QqboVFoo1yoHsmdlV2a/zYnKOZarnivN7cyzytuQN5zvn//tEsIS4ZK2pYZLVy0dWOa9rGo5sjxxedsK4xUFK4ZWBqw8uIq2Km3VT6vtV5eufr0mek1rgV7ByoLBtQFr6wtVCuWFfevc1+1dT1gvWd+1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aXDm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3SPVRSj9Yr60cOxx++/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKaRptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO32oPb++6EHTh0kX/i+c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfVP1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i/suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAAQYNJREFUeNrs3X+QZXV5J/DnPT3DjAMDLYOgoiBk1xhd11qNa/kDSq1FkF+JxphUYuJmsy5r1rWsxGI3v2xyU6WbMllNqtvNZiWa3SQiMRZ/YBRBEkRAUyYxGouKigSCgMww0zPd83P3j/v9vs+5fU93T8/0nNt9z/tV1TXT997b997znvOc83me5/s5RZZlAQAAYPp0Zv0CAAAAzIaAEAAAYEoJCAEAAKaUgBAAAGBKCQgBAACmlIAQAABgSgkIAQAAptTSrF8AAICNp7u0vHd24+LScqcT19u5r6yItBvnXMi3iu+TcqxTZN3uct5dWl5a6OY+y3Jc7mZZFv/udJezuL7Yfb+TZVnWzb2u+DrL+T2KcyzP5bUu533mrnPsLN93rSx+2Vrp5l6f7nvqPscAMBsCQgCm3rOuuO3EHM3aWxLxPfvlc5F2l/N1nYKyzvLyUgjGYiC2ENe36OQnRLFYXOjGx5VAmIvFhbj//Hn8eaEcVz/Prc8DzvKxvJx7rwX+s76+eL6F3PkW+sevuP/5AcfG66qfI55v7fuvvL/K5ypfV2xX11e+/sq1L4T3Fx+b3yZ3jkp7kT3P/DYrXf8AMLkEhABMhW0fuK0T07dPKNK3P+mEcz3r+VfefsbcGY8bpFvklRULxdL83POcMr/cMo3vxi+LKz3Tlb55f/0n5ef8OY/nKdf3l6+i+D51/fK+r8u/Vn6OlV5X6Tb969yHqj5d+37zx2W5n7P+U9e/jvw4XP8a/nvlVnr5zxn/jfPHLuV+zvLPl39t+e+5kPs5fw1V1xb///S/F+d1lfOW+6z/NQIw7QSEABw3YhpZDOjStLH8xGtlKbew//DqAZ3cyp/Dg+XKcLEU/81ty/LKQj/ISUFWLSjKBVH59/Hc3Yqyqt+BxeLiYv/n1fbLYq3c8TF4TOdZi/coB5t5+fOW/W++jvx+VeXfpT9s+e/5X/ItrP5cuf2q65O7/rr3mvtaivw2Dfvm/75ypyrHpsqxKRjNs3+A45uAEIAxF1OtuhXRxWqNvRhsFT1j5f8RuoZ8dLDtS1+YX+m3rRG0lEFeuS4FFOXIpqtcl/vMBRr5q6y/t7KGbr2t0v/lv5Yu+Jjylq+nXrm+9eegHPmUAdNlN/5Jaa3Xta/qfQ1Ut/o++1uo+jrytfTn+Q+e//+0eozL/+/zafTdlfWkUWy/5etJw5qvt6k/UQCA8ScgBGBkxPQvBXrVNK7j8e+dTj9A7HSK7qAAbakMAsvrU0CYr0GXX5/+5d9Lfp+U6lQOH63SX/s+y/bT+/s15X7zx9YDinztt+pjy+fY0Ovvflb+vuK2eTn1etJry7epB5yp/5WB4Mqvqw+M/u3Lryu/v/z+ZaCVD9qycu39UPQA0BYCQgCORQrOjg7yOpWMr1gbKqU9lb/0qQWsafRoUc/GWi1A+9oXV0qnq1JVyiinP3W0kKafT/2/qpn+1QOXIw+88q+r8t4O/2k9f9KF//WrH0+2mV/fYvV18Y98+lgtW2v+vy3/eRdz289XTXI/f1k8duX9D0pdHa7fpP691OPNA8Dx1bOUF/uT9XF9eQK41cW1rny/AQBGlYAQgIaYclkd0ZhSLTtL/dGd+emg3V/+wf1lG8H00d1YNy/2ryt6gjLKX/d8/cMsLlePL7f5H++5cygfamEhv+1CVu4Xz1+eY+V91s+zUPaVW2y8vhM/R+U6Fo9+bvv/8fv3x48ff/vYyXVmOqcXS7fML9bKuFz8lN+/t3T4OeoTweQDtMo+ZfrmgOP7fyH5f/x8fXl+P8f89eX/G/KvqZ6D8J+8nL+uMoV2MX/ddZ/r8ABYKcEbAMyGgBBg6gzWjUuBWycdtJ82Wp4rBWv5/lad+AQfdR6d/tRG+ZSqw/ORHSlA+NL/vP/oU/7+Qgwc47/ly+L6qvaH+YCm/IxFPlCpjKitXmN1m/ow42Ip0o3Pb6EacJXrF7JhTy/9mZUCjsoY3fx/6sL85xn6GvLXVqZyrs0S2gxO0w5Gfn+d1R8rf3z//6vqOs+D/tPy/59+Xx0Kw0RgCsC0EBACnIDKX/oZlf7h/fmlYhAYUsDS6U+FXU0xTf8d8f+8TtHtdC7LOnH76vcxqFta/g3eXlLqoRZH+KZmfSs/4kJ5K/dP+97//O9Zd7lcx+BrnP+Hy38+de/eNfz9ptfWA4T69eUmgSk+QwwCF7Pea4z/wn3b1L+n+uTuVVn/M8e0z5W+F9i6X0f+P619/f1TzQJa+Q8uX09+m/x/UPU3FQCA40VAuEn/5q5H/vXo/o99vJNV0owqk4pXT4RaSRlaoEd0PVglpQB1y7SHMhW1mtqwNop4YQ8/yf4fPnBGN3c81dl+yRv/YvGUn37wHqp+VEbrxrSnxXL5gq30qTVSgRbz3/H5MaGLSxvx0/cX69J9x3PFQKuT+4zlPa0sLgzWFctfR9nu8JaP/2CuCOdYqd9j1ulm9UkrytfWD5TLYPkb+/8p/5XFj5YC1vz98+6j/dJUztF/VG7/A2u4lhc++sAR/zsu1FvQVvYVbPx3P6T3m+c9x88X/+vKgLA5BbM2WrZ/D3H+/usv2puzlv9/bE5FTQN+66mfxbz8f0vVesGq/4P/+6E9K52/5m//2AOXx/+uWF9G3vzXAMAoExBu1N+BPgxgDHRyy0+fP+M/DlmX/QwARl/+C5ujpw8uLSx2PxjX/ewZf+vj01b3svcPOl29b2A9OLn/C0mEZcsBKNxX/z0t1+sQ1uvc1d9fb+K+/L75Y1b6ggE4UX1m+cnzvwb0rl/6xm9+g/cYAPDkPfqaW74oHgRgXLUNHFxM3/blv0bKSSuqMxBWZwqszrp3dCBQpoXWztev61f+Vx/TvE/aZpXzDB7Tv+byjIf0M+3f/0rrBgHg+PLU/JPXAU8BAGA9CAgBAGDMLBYrp1GutSh7tq/+h6o/U+baJ2isLl/5YSZx9pvy58FZRsu+e1l1H58u/77c/+i6ch6BchRv7nPUJ58p+wKm38t+g5V9qv3f8vvE88d9j5zV//h/Vtr/yPV8/v9FkX8f5aSN7ecv/99Wv/Z+v8V0/vyxlff9rCvev/fon9ff26CfAMAIERACAMCY+fc/96Jrj+W4uZXOx5uu+Y333L72LXa96ZoXxD9qQ8o+c9xSx9LnXfuZv5+r1zCtevdHnjff/Vlt7dGfrQeYteOKMiAcfNxmg+FqH8lqcFlfX/3c+c9fDTbT60nBa/6c+W36Y6t/+uavvsH3AsC4EhACAMCYu+ue5fY0wfpgdTBZb9kasPJ9xu3z69J+leOqfSjbz3H0e6ocV7/O6u/19cvrc/tfcvW/PNh4/uM//8r/jn/uPPT5a2v+1Zeu/0y/+KM/NaZ67E/9t48++F+vPO/w11t53+fde/Bz3zvl/t6LNQa0+eshABhlAkIAAICR9Kvvfvh9dz64cMH8Hbt6v5f13r/2Df/6o20Bf3cMAvz/D5B4RYoXpb8AAAAASUVORK5CYII=';
-
-        // Load the Elixir logo
+        // Load the Elixir logo from SVG file
         const elixirLogoImg = new Image();
         elixirLogoImg.onload = () => {
             state.elixirLogo = elixirLogoImg;
@@ -684,14 +687,14 @@ input[type="file"] {
             console.error('Failed to load Elixir logo');
             renderThumbnail();
         };
-        elixirLogoImg.src = ELIXIR_LOGO_BASE64;
+        elixirLogoImg.src = 'elixir-logo.svg';
 
         // Template configurations
         const templates = {
             gradient: {
                 name: 'Modern Gradient',
                 backgroundType: 'gradient',
-                gradient: {start: '#7C6D91', end: '#D278AA', angle: 135},
+                gradient: { start: '#7C6D91', end: '#D278AA', angle: 135 },
                 textColor: '#FFFFFF',
                 accentColor: '#FAEBC3',
                 logoColor: '#FFFFFF'
@@ -715,7 +718,7 @@ input[type="file"] {
             split: {
                 name: 'Split-Tone',
                 backgroundType: 'gradient',
-                gradient: {start: '#7C6D91', end: '#2C3E50', angle: 90},
+                gradient: { start: '#7C6D91', end: '#2C3E50', angle: 90 },
                 textColor: '#FFFFFF',
                 accentColor: '#F3CC9C',
                 logoColor: '#FFFFFF'
@@ -814,11 +817,30 @@ input[type="file"] {
 
         // Download button
         document.getElementById('download-btn').addEventListener('click', () => {
-            const link = document.createElement('a');
-            const filename = `elixir-montreal-${state.month.toLowerCase()}-${state.year}.png`;
-            link.download = filename;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+            try {
+                // Ensure canvas is ready
+                if (!canvas || !ctx) {
+                    console.error('Canvas not ready');
+                    return;
+                }
+
+                // Get the data URL
+                const dataURL = canvas.toDataURL('image/png');
+
+                // Create download link
+                const link = document.createElement('a');
+                const filename = `elixir-montreal-${state.month.toLowerCase()}-${state.year}.png`;
+                link.download = filename;
+                link.href = dataURL;
+
+                // Add to DOM, click, then remove
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error('Download failed:', error);
+                alert('Failed to download thumbnail. Please try again.');
+            }
         });
 
         // Render thumbnail
@@ -849,12 +871,12 @@ input[type="file"] {
             // Draw Elixir logo based on template
             if (state.elixirLogo) {
                 let logoX, logoY, logoWidth;
-                
+
                 // Position and size logo based on template
                 if (state.selectedTemplate === 'gradient') {
                     logoX = 50;
                     logoY = 50;
-                    logoWidth = 250;
+                    logoWidth = 144;
                 } else if (state.selectedTemplate === 'minimalist') {
                     logoX = 80;
                     logoY = 210;
@@ -862,57 +884,55 @@ input[type="file"] {
                 } else if (state.selectedTemplate === 'dark') {
                     logoX = 50;
                     logoY = 50;
-                    logoWidth = 250;
+                    logoWidth = 144;
                 } else if (state.selectedTemplate === 'split') {
                     logoX = 80;
                     logoY = 210;
                     logoWidth = 250;
                 }
-                
-                // Calculate height maintaining aspect ratio (original is 900x600)
-                const logoHeight = logoWidth * (600 / 900);
-                
-                // Draw logo with slight transparency for better integration
-                ctx.globalAlpha = 0.95;
+
+                // Calculate height maintaining aspect ratio (SVG is 128x128, square)
+                const logoHeight = logoWidth;
+
+                // Draw logo - preserve PNG transparency
                 ctx.drawImage(state.elixirLogo, logoX, logoY, logoWidth, logoHeight);
-                ctx.globalAlpha = 1.0;
             }
 
             // Draw "Elixir Montréal" branding - adjust position based on template
             ctx.font = 'bold 36px Arial, sans-serif';
             ctx.fillStyle = template.textColor;
-            
+
             let brandingY = 100;
-            let brandingX = 200;
-            
+            let brandingX = 250;
+
             // Adjust text position for minimalist and split templates where logo is centered
             if (state.selectedTemplate === 'minimalist' || state.selectedTemplate === 'split') {
                 brandingX = 420;
                 brandingY = 260;
             }
-            
+
             ctx.fillText('ELIXIR MONTRÉAL', brandingX, brandingY);
 
             // Draw date - adjust position based on template
             ctx.font = '28px Arial, sans-serif';
             ctx.fillStyle = template.accentColor;
-            
+
             let dateY = 140;
-            let dateX = 200;
-            
+            let dateX = 250;
+
             // Adjust date position for minimalist and split templates
             if (state.selectedTemplate === 'minimalist' || state.selectedTemplate === 'split') {
                 dateX = 420;
                 dateY = 300;
             }
-            
+
             ctx.fillText(`${state.month} ${state.year}`, dateX, dateY);
 
             // Calculate title area - adjust based on template
             let titleX = 80;
             let titleY = 280;
             let titleMaxWidth = state.screenshotImage ? 680 : 1120;
-            
+
             // Adjust title position for minimalist and split templates
             if (state.selectedTemplate === 'minimalist' || state.selectedTemplate === 'split') {
                 titleY = 380;
@@ -933,15 +953,15 @@ input[type="file"] {
                 const screenshotHeight = 480;
                 const screenshotX = width - screenshotWidth - 60;
                 const screenshotY = (height - screenshotHeight) / 2;
-                
+
                 // Add border/shadow
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
                 ctx.shadowBlur = 20;
                 ctx.shadowOffsetX = 0;
                 ctx.shadowOffsetY = 10;
-                
+
                 drawImageCover(ctx, state.screenshotImage, screenshotX, screenshotY, screenshotWidth, screenshotHeight);
-                
+
                 ctx.shadowColor = 'transparent';
                 ctx.shadowBlur = 0;
                 ctx.shadowOffsetX = 0;
@@ -953,20 +973,20 @@ input[type="file"] {
                 const headshotSize = 180;
                 const headshotX = width - headshotSize - 80;
                 const headshotY = height - headshotSize - 60;
-                
+
                 // Draw circular headshot with border
                 ctx.save();
                 ctx.beginPath();
-                ctx.arc(headshotX + headshotSize/2, headshotY + headshotSize/2, headshotSize/2, 0, Math.PI * 2);
+                ctx.arc(headshotX + headshotSize / 2, headshotY + headshotSize / 2, headshotSize / 2, 0, Math.PI * 2);
                 ctx.closePath();
                 ctx.clip();
-                
+
                 drawImageCover(ctx, state.headshotImage, headshotX, headshotY, headshotSize, headshotSize);
                 ctx.restore();
-                
+
                 // Border
                 ctx.beginPath();
-                ctx.arc(headshotX + headshotSize/2, headshotY + headshotSize/2, headshotSize/2, 0, Math.PI * 2);
+                ctx.arc(headshotX + headshotSize / 2, headshotY + headshotSize / 2, headshotSize / 2, 0, Math.PI * 2);
                 ctx.strokeStyle = template.accentColor;
                 ctx.lineWidth = 6;
                 ctx.stroke();
@@ -985,7 +1005,7 @@ input[type="file"] {
             ctx.save();
             ctx.fillStyle = color;
             ctx.globalAlpha = 0.3;
-            
+
             // Simplified fleur-de-lis shape
             ctx.beginPath();
             // Center petal
@@ -993,19 +1013,19 @@ input[type="file"] {
             ctx.quadraticCurveTo(x + size * 0.3, y + size * 0.3, x + size * 0.4, y + size * 0.6);
             ctx.lineTo(x + size * 0.6, y + size * 0.6);
             ctx.quadraticCurveTo(x + size * 0.7, y + size * 0.3, x + size * 0.5, y);
-            
+
             // Left petal
             ctx.moveTo(x + size * 0.2, y + size * 0.4);
             ctx.quadraticCurveTo(x, y + size * 0.5, x + size * 0.15, y + size * 0.7);
             ctx.lineTo(x + size * 0.35, y + size * 0.65);
             ctx.quadraticCurveTo(x + size * 0.3, y + size * 0.5, x + size * 0.2, y + size * 0.4);
-            
+
             // Right petal
             ctx.moveTo(x + size * 0.8, y + size * 0.4);
             ctx.quadraticCurveTo(x + size, y + size * 0.5, x + size * 0.85, y + size * 0.7);
             ctx.lineTo(x + size * 0.65, y + size * 0.65);
             ctx.quadraticCurveTo(x + size * 0.7, y + size * 0.5, x + size * 0.8, y + size * 0.4);
-            
+
             ctx.fill();
             ctx.restore();
         }
@@ -1051,4 +1071,5 @@ input[type="file"] {
         renderThumbnail();
     </script>
 </body>
+
 </html>
