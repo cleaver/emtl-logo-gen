@@ -2,18 +2,21 @@
 class ThumbnailApp {
     constructor() {
         this.renderer = new CanvasRenderer('thumbnail-canvas');
+        // Set callback so renderer can notify us when logo loads
+        this.renderer.setOnLogoLoaded(() => this.updateCanvas());
+
         this.dragResize = new DragResizeHandler(
             document.getElementById('thumbnail-canvas'),
             this.renderer,
             () => this.updateCanvas()
         );
-        
+
         this.currentLayout = 'classic';
         this.currentTitle = '';
         this.currentMonth = 'November';
         this.currentYear = '2025';
         this.currentFontSize = 48;
-        
+
         this.setupEventListeners();
         this.updateCanvas();
     }
@@ -118,7 +121,7 @@ class ThumbnailApp {
     setDefaultHeadshotPosition() {
         const canvas = document.getElementById('thumbnail-canvas');
         const pos = this.dragResize.getHeadshotPos();
-        
+
         // Default positions based on layout
         if (this.currentLayout === 'classic') {
             pos.x = canvas.width - 250;
@@ -136,14 +139,14 @@ class ThumbnailApp {
             pos.width = 200;
             pos.height = 200;
         }
-        
+
         this.dragResize.setHeadshotPos(pos);
     }
 
     setDefaultScreenshotPosition() {
         const canvas = document.getElementById('thumbnail-canvas');
         const pos = this.dragResize.getScreenshotPos();
-        
+
         // Default positions based on layout
         if (this.currentLayout === 'classic') {
             pos.x = 500;
@@ -161,7 +164,7 @@ class ThumbnailApp {
             pos.width = 400;
             pos.height = 300;
         }
-        
+
         this.dragResize.setScreenshotPos(pos);
     }
 
@@ -181,7 +184,7 @@ class ThumbnailApp {
     updateCanvas() {
         const headshotPos = this.dragResize.getHeadshotPos();
         const screenshotPos = this.dragResize.getScreenshotPos();
-        
+
         this.renderer.render({
             layout: this.currentLayout,
             title: this.currentTitle,

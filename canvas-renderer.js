@@ -8,21 +8,57 @@ class CanvasRenderer {
         this.logoImage = null;
         this.headshotImage = null;
         this.screenshotImage = null;
+        this.onLogoLoaded = null; // Callback for when logo loads
         this.loadLogo();
     }
 
+    setOnLogoLoaded(callback) {
+        this.onLogoLoaded = callback;
+    }
+
     async loadLogo() {
+        this.logoImage = new Image();
+
+        this.logoImage.onload = () => {
+            // Notify app that logo is loaded so it can re-render
+            if (this.onLogoLoaded) {
+                this.onLogoLoaded();
+            }
+        };
+
+        this.logoImage.onerror = (error) => {
+            console.error('Error loading logo image:', error);
+            // Try alternative loading method
+            this.loadLogoAlternative();
+        };
+
+        // Try loading directly first
+        this.logoImage.src = 'elixir-logo.svg';
+    }
+
+    async loadLogoAlternative() {
         try {
             const response = await fetch('elixir-logo.svg');
+            if (!response.ok) {
+                throw new Error(`Failed to load logo: ${response.status}`);
+            }
             const svgText = await response.text();
-            const blob = new Blob([svgText], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            this.logoImage = new Image();
-            this.logoImage.onload = () => {
-                URL.revokeObjectURL(url);
-                this.render();
+            // Create data URL instead of blob
+            const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.logoImage = new Image();
+                this.logoImage.onload = () => {
+                    if (this.onLogoLoaded) {
+                        this.onLogoLoaded();
+                    }
+                };
+                this.logoImage.onerror = (error) => {
+                    console.error('Error loading logo via alternative method:', error);
+                };
+                this.logoImage.src = e.target.result;
             };
-            this.logoImage.src = url;
+            reader.readAsDataURL(svgBlob);
         } catch (error) {
             console.error('Error loading logo:', error);
         }
@@ -150,20 +186,26 @@ class CanvasRenderer {
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // Logo in top-left
-        if (this.logoImage) {
-            const logoSize = 80;
-            this.ctx.drawImage(this.logoImage, 40, 40, logoSize, logoSize);
-        }
-
-        // "ELIXIR MONTRÉAL" text
+        // Logo and "ELIXIR MONTRÉAL" text (logo to the left of text)
         this.ctx.fillStyle = '#ffffff';
         this.ctx.font = 'bold 32px sans-serif';
-        this.ctx.fillText('ELIXIR MONTRÉAL', 40, 150);
+        const textY = 80; // Vertical center for logo + text
+        const logoSize = 60; // Increased size for better visibility
+        const logoX = 40;
+        const logoY = textY - logoSize / 2 + 16; // Center logo vertically with text baseline
+
+        if (this.logoImage) {
+            if (this.logoImage.complete && this.logoImage.naturalWidth > 0) {
+                this.ctx.drawImage(this.logoImage, logoX, logoY, logoSize, logoSize);
+            }
+        }
+
+        const textX = logoX + logoSize + 15; // Text starts after logo with spacing
+        this.ctx.fillText('ELIXIR MONTRÉAL', textX, textY);
 
         // Month/Year
         this.ctx.font = '24px sans-serif';
-        this.ctx.fillText(`${month} ${year}`, 40, 180);
+        this.ctx.fillText(`${month} ${year}`, textX, textY + 35);
 
         // Title (centered-left, large)
         this.ctx.fillStyle = '#ffffff';
@@ -212,11 +254,20 @@ class CanvasRenderer {
         // Left side content (60%)
         const leftWidth = this.width * 0.6;
 
-        // Logo at top-left
-        if (this.logoImage) {
-            const logoSize = 70;
-            this.ctx.drawImage(this.logoImage, 50, 50, logoSize, logoSize);
+        // Logo and "ELIXIR MONTRÉAL" text (logo to the left of text)
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.font = 'bold 28px sans-serif';
+        const headerY = 60;
+        const logoSize = 45;
+        const logoX = 50;
+        const logoY = headerY - logoSize / 2 + 14; // Center logo vertically with text baseline
+
+        if (this.logoImage && this.logoImage.complete && this.logoImage.naturalWidth > 0) {
+            this.ctx.drawImage(this.logoImage, logoX, logoY, logoSize, logoSize);
         }
+
+        const textX = logoX + logoSize + 12;
+        this.ctx.fillText('ELIXIR MONTRÉAL', textX, headerY);
 
         // Title on left side, vertically centered
         this.ctx.fillStyle = '#ffffff';
@@ -264,21 +315,31 @@ class CanvasRenderer {
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // Logo centered at top
-        if (this.logoImage) {
-            const logoSize = 100;
-            const logoX = (this.width - logoSize) / 2;
-            this.ctx.drawImage(this.logoImage, logoX, 60, logoSize, logoSize);
-        }
-
-        // "ELIXIR MONTRÉAL" and date below logo
+        // Logo and "ELIXIR MONTRÉAL" text centered (logo to the left of text)
         this.ctx.fillStyle = '#ffffff';
         this.ctx.font = 'bold 36px sans-serif';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText('ELIXIR MONTRÉAL', this.width / 2, 180);
+        const logoSize = 60;
+        const headerY = 80;
+
+        // Calculate total width of logo + spacing + text to center the group
+        const textWidth = this.ctx.measureText('ELIXIR MONTRÉAL').width;
+        const spacing = 15;
+        const totalWidth = logoSize + spacing + textWidth;
+        const groupStartX = (this.width - totalWidth) / 2;
+
+        const logoX = groupStartX;
+        const logoY = headerY - logoSize / 2 + 18; // Center logo vertically with text baseline
+
+        if (this.logoImage && this.logoImage.complete && this.logoImage.naturalWidth > 0) {
+            this.ctx.drawImage(this.logoImage, logoX, logoY, logoSize, logoSize);
+        }
+
+        const textX = logoX + logoSize + spacing;
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText('ELIXIR MONTRÉAL', textX, headerY);
 
         this.ctx.font = '24px sans-serif';
-        this.ctx.fillText(`${month} ${year}`, this.width / 2, 220);
+        this.ctx.fillText(`${month} ${year}`, textX, headerY + 40);
 
         // Large centered title
         this.ctx.font = `bold ${fontSize}px sans-serif`;
