@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir Montréal - YouTube Thumbnail Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Elixir Montréal Thumbnail Generator</h1>
+        </header>
+
+        <div class="main-content">
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <h2>Customize Thumbnail</h2>
+
+                <!-- Layout Selector -->
+                <div class="control-group">
+                    <label for="layout-select">Layout:</label>
+                    <select id="layout-select">
+                        <option value="classic">Classic Gradient</option>
+                        <option value="split">Modern Split-Screen</option>
+                        <option value="centered">Centered Hero</option>
+                    </select>
+                </div>
+
+                <!-- Title Input -->
+                <div class="control-group">
+                    <label for="title-input">Title:</label>
+                    <textarea id="title-input" rows="3" placeholder="Enter presentation title..."></textarea>
+                </div>
+
+                <!-- Font Size -->
+                <div class="control-group">
+                    <label for="font-size-slider">Font Size: <span id="font-size-value">48</span>px</label>
+                    <input type="range" id="font-size-slider" min="24" max="120" value="48">
+                </div>
+
+                <!-- Month and Year -->
+                <div class="control-group">
+                    <label for="month-select">Month:</label>
+                    <select id="month-select">
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="year-input">Year:</label>
+                    <input type="number" id="year-input" value="2025" min="2020" max="2100">
+                </div>
+
+                <!-- Image Uploads -->
+                <div class="control-group">
+                    <label for="headshot-upload">Headshot (optional):</label>
+                    <input type="file" id="headshot-upload" accept="image/*">
+                    <button id="remove-headshot" class="remove-btn" style="display: none;">Remove Headshot</button>
+                </div>
+
+                <div class="control-group">
+                    <label for="screenshot-upload">Screenshot (optional):</label>
+                    <input type="file" id="screenshot-upload" accept="image/*">
+                    <button id="remove-screenshot" class="remove-btn" style="display: none;">Remove Screenshot</button>
+                </div>
+
+                <!-- Aspect Ratio Toggle -->
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="maintain-aspect" checked>
+                        Maintain Aspect Ratio
+                    </label>
+                </div>
+
+                <!-- Download Button -->
+                <div class="control-group">
+                    <button id="download-btn" class="download-btn">Download Thumbnail</button>
+                </div>
+            </div>
+
+            <!-- Canvas Preview Area -->
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <canvas id="thumbnail-canvas" width="1280" height="720"></canvas>
+                    <div id="canvas-overlay" class="canvas-overlay"></div>
+                </div>
+                <p class="canvas-info">1280 × 720 pixels (YouTube thumbnail size)</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="canvas-renderer.js"></script>
+    <script src="drag-resize.js"></script>
+</body>
+
+</html>
