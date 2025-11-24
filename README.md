@@ -14,16 +14,21 @@ A customizable web application for generating YouTube thumbnails for Elixir Mont
 
 ## Usage
 
-1. Open `index.html` in a web browser
-2. Select your preferred layout from the dropdown
-3. Enter your presentation title
-4. Adjust the font size using the slider
-5. Select the month and enter the year
-6. (Optional) Upload a headshot image - it will appear as a circular image
-7. (Optional) Upload a screenshot image
-8. Click and drag images to reposition them
-9. Click and drag corner/edge handles to resize images
-10. Click "Download Thumbnail" to save your image
+You need to serve the files from an HTTP server. You can use any server such as `nginx`, or to serve the files from your local machine use a lightweight static HTTP server such as [http-server](https://www.npmjs.com/package/http-server):
+
+1. Install http-server globally: `npm i -g http-server` (or use your preferred HTTP server)
+2. Navigate to the directory containing `index.html` in your terminal
+3. Run `http-server` to start the local server
+4. Open your browser and navigate to the URL shown (typically `http://localhost:8080`)
+5. Select your preferred layout from the dropdown
+6. Enter your presentation title
+7. Adjust the font size using the slider
+8. Select the month and enter the year
+9. (Optional) Upload a headshot image - it will appear as a circular image
+10. (Optional) Upload a screenshot image
+11. Click and drag images to reposition them
+12. Click and drag corner/edge handles to resize images
+13. Click "Download Thumbnail" to save your image
 
 ## Technical Details
 
